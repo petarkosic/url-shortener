@@ -3,6 +3,6 @@ import { getInput } from '../controllers/urlControllers';
 
 const router = Router();
 
-router.get('/', getInput);
+router.post('/', getInput);
 
 export default router;

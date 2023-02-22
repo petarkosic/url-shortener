@@ -26,28 +26,17 @@ export const getInput = async (
 	const input = await redis.get(longUrl as string);
 
 	if (input) {
-		res.status(200).json(JSON.parse(input));
+		res.status(200).json({ input });
 	} else {
-		await redis.set(
-			longUrl as string,
-			`http:\/\/localhost:5000/${generateHash()}`
-		);
-		res.status(200).json(JSON.parse(longUrl));
+		let hashValue: string = generateHash();
+		let redirectString: string = `http:\/\/localhost:5000/${hashValue}`;
+
+		await redis.set(longUrl, redirectString);
+		await redis.set(redirectString, longUrl);
+
+		const getHashValueFromUrl = await redis.get(longUrl);
+		const getLongValueFromHashString = await redis.get(redirectString);
+
+		res.status(200).json({ getHashValueFromUrl, getLongValueFromHashString });
 	}
-	next();
-
-	// get the long url
-	// check if in redis
-	// if yes, return the short url
-	// if no, generate a new short url
-	// store the short url in redis
-	// return the short url
-	// redis.set('aaaaa', 'b2');
-	// const getValue = await redis.get('a');
-	// console.log(getValue);
-
-	// res
-	// 	.status(200)
-	// 	.json({ message: 'Hello from api router', redisValue: getValue });
-	// return '';
 };
