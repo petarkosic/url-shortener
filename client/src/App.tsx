@@ -1,34 +1,43 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+	const [longUrl, setLongUrl] = useState<string>('');
+	const [data, setData] = useState<any>(null);
 
-  return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
-  )
+	async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+		e.preventDefault();
+		if (longUrl) {
+			const fetchData = await fetch('http://localhost:5000/api', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ longUrl }),
+			});
+			const resData = await fetchData.json();
+			setData(resData);
+			setLongUrl('');
+		}
+	}
+
+	return (
+		<div className='App'>
+			<div className='form__wrapper'>
+				<form onSubmit={handleSubmit}>
+					<input
+						type='text'
+						value={longUrl}
+						onChange={(e) => setLongUrl(e.target.value)}
+						placeholder='Enter URL'
+					/>
+					<button type='submit'>Submit</button>
+				</form>
+			</div>
+			<div className='data__value'>{data?.hashValue}</div>
+		</div>
+	);
 }
 
-export default App
+export default App;
