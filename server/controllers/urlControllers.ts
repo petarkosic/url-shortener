@@ -22,21 +22,51 @@ export const getInput = async (
 	if (!isValidUri) {
 		return res.status(400).json({ message: 'Invalid URL' });
 	}
+	let hashValue: string = generateHash();
+	let redirectString: string = `http:\/\/localhost:5000/api/${hashValue}`;
+	// let redirectString: string = `${req.hostname}/${hashValue}`;
 
-	const input = await redis.get(longUrl as string);
+	const getHashValueFromUrl = await redis.get(longUrl);
 
-	if (input) {
-		res.status(200).json({ input });
+	if (getHashValueFromUrl !== null) {
+		const getLongValueFromHashString = await redis.get(getHashValueFromUrl);
+		res.status(200).json({
+			hashValue: getHashValueFromUrl,
+			originalUrl: getLongValueFromHashString,
+		});
 	} else {
-		let hashValue: string = generateHash();
-		let redirectString: string = `http:\/\/localhost:5000/${hashValue}`;
-
 		await redis.set(longUrl, redirectString);
 		await redis.set(redirectString, longUrl);
 
 		const getHashValueFromUrl = await redis.get(longUrl);
 		const getLongValueFromHashString = await redis.get(redirectString);
 
-		res.status(200).json({ getHashValueFromUrl, getLongValueFromHashString });
+		res.status(200).json({
+			hashValue: getHashValueFromUrl,
+			originalUrl: getLongValueFromHashString,
+		});
+	}
+};
+
+export const redirectRequest = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	const { id } = req.params;
+	console.log({ id });
+
+	const fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+
+	const isValidUri = isUri(fullUrl);
+
+	if (!isValidUri) {
+		return res.status(400).json({ message: 'Invalid URL' });
+	}
+
+	const getHashValueFromUrl = await redis.get(fullUrl);
+
+	if (getHashValueFromUrl !== null) {
+		res.redirect(`${getHashValueFromUrl}`);
 	}
 };
