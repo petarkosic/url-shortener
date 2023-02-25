@@ -53,9 +53,6 @@ export const redirectRequest = async (
 	res: Response,
 	next: NextFunction
 ) => {
-	const { id } = req.params;
-	console.log({ id });
-
 	const fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
 
 	const isValidUri = isUri(fullUrl);

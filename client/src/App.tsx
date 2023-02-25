@@ -35,7 +35,11 @@ function App() {
 					<button type='submit'>Submit</button>
 				</form>
 			</div>
-			<div className='data__value'>{data?.hashValue}</div>
+			<div className='data__value'>
+				<Link to={data?.hashValue} target='_blank'>
+					{data?.hashValue}
+				</Link>
+			</div>
 		</div>
 	);
 }
