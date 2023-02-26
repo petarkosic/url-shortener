@@ -1,0 +1,47 @@
+version: '3'
+services:
+  redis:
+    image: redis/redis-stack:latest
+    container_name: url-redis
+    ports:
+      - 6379:6379
+      - 8001:8001
+    environment:
+      - REDIS_ARGS=--save 3602 1 --save 302 30 --save 62 10000
+    volumes:
+      - ./local-data:/data
+    networks:
+      - url-net
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: url-server
+    ports:
+      - 5000:5000
+    volumes:
+      - /app/node_modules
+      - ./server:/usr/src/app
+    depends_on:
+      - redis
+    networks:
+      - url-net
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: url-client
+    ports:
+      - 3000:3000
+    volumes:
+      - /app/node_modules
+      - ./client:/app
+    depends_on:
+      - server
+    networks:
+      - url-net
+networks:
+  url-net:
+
+volumes:
+  local-data:
