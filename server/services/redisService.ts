@@ -1,4 +1,6 @@
 import { createClient } from 'redis';
+import { config } from 'dotenv';
+config();
 
 export type RedisClient = ReturnType<typeof createClient>;
 
