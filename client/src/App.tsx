@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './App.css';
+import { motion } from 'framer-motion';
 
 function App() {
 	const [longUrl, setLongUrl] = useState<string>('');
@@ -34,11 +35,16 @@ function App() {
 						style={{ overflowY: history.length > 20 ? 'scroll' : 'auto' }}
 					>
 						{history.map((url, index) => (
-							<li key={index}>
+							<motion.li
+								initial={{ opacity: 0, scale: 0.5 }}
+								animate={{ opacity: 1, scale: 1 }}
+								transition={{ duration: 0.2 }}
+								key={index}
+							>
 								<Link to={url} target='_blank'>
 									{url}
 								</Link>
-							</li>
+							</motion.li>
 						))}
 					</div>
 				</div>
@@ -55,11 +61,16 @@ function App() {
 						<button type='submit'>Submit</button>
 					</form>
 				</div>
-				<div className='data__value'>
+				<motion.div
+					initial={{ opacity: 0, scale: 0.5 }}
+					animate={{ opacity: 1, scale: 1 }}
+					transition={{ duration: 0.5 }}
+					className='data__value'
+				>
 					<Link to={data?.hashValue} target='_blank'>
 						{data?.hashValue}
 					</Link>
-				</div>
+				</motion.div>
 			</div>
 		</div>
 	);
