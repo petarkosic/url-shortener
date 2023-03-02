@@ -1,7 +1,6 @@
 #root {
 	max-width: 1280px;
 	margin: 0 auto;
-	padding: 2rem;
 	text-align: center;
 }
 
@@ -22,10 +21,51 @@
 	color: #888;
 }
 
-.history {
+.history__container {
 	width: 40%;
+}
+
+.history {
+	width: 100%;
+	max-height: 600px;
 	padding: 0;
 	margin: 0;
+	overflow-y: scroll;
+}
+
+.history li {
+	list-style: none;
+	text-align: left;
+	padding-bottom: 0.125em;
+}
+
+::-webkit-scrollbar {
+	width: 15px;
+	height: 20px;
+}
+
+::-webkit-scrollbar-thumb {
+	background: #888;
+	border-radius: 4px;
+}
+
+::-webkit-scrollbar-track {
+	background: #333;
+	border-radius: 4px;
+}
+
+::-webkit-scrollbar-corner {
+	background: white;
+	border: 3px solid gray;
+	border-radius: 4px;
+}
+
+::-webkit-scrollbar-button:vertical:start:increment,
+::-webkit-scrollbar-button:vertical:end:decrement,
+::-webkit-scrollbar-button:horizontal:start:increment,
+::-webkit-scrollbar-button:horizontal:end:decrement {
+	display: block;
+	height: 100%;
 }
 
 .form__container {

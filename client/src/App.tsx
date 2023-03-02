@@ -27,15 +27,20 @@ function App() {
 	return (
 		<div className='App'>
 			{history.length > 0 && (
-				<div className='history'>
+				<div className='history__container'>
 					<p>History:</p>
-					{history.map((url, index) => (
-						<li key={index}>
-							<Link to={url} target='_blank'>
-								{url}
-							</Link>
-						</li>
-					))}
+					<div
+						className='history'
+						style={{ overflowY: history.length > 20 ? 'scroll' : 'auto' }}
+					>
+						{history.map((url, index) => (
+							<li key={index}>
+								<Link to={url} target='_blank'>
+									{url}
+								</Link>
+							</li>
+						))}
+					</div>
 				</div>
 			)}
 			<div className='form__container'>
