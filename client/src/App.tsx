@@ -7,21 +7,27 @@ function App() {
 	const [longUrl, setLongUrl] = useState<string>('');
 	const [data, setData] = useState<any>(null);
 	const [history, setHistory] = useState<string[]>([]);
+	const [error, setError] = useState<string>('');
 
 	async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
-		setHistory((prevHistory) => [...prevHistory, longUrl]);
-		if (longUrl) {
-			const fetchData = await fetch('http://localhost:5000/api', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({ longUrl }),
-			});
-			const resData = await fetchData.json();
-			setData(resData);
-			setLongUrl('');
+		try {
+			if (longUrl) {
+				const fetchData = await fetch('http://localhost:5000/api', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ longUrl }),
+				});
+				const resData = await fetchData.json();
+				setData(resData);
+				setLongUrl('');
+				setHistory((prevHistory) => [...prevHistory, longUrl]);
+			}
+		} catch (error: any) {
+			console.log(error.message);
+			setError(error.message);
 		}
 	}
 
