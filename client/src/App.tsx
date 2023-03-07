@@ -20,10 +20,21 @@ function App() {
 					},
 					body: JSON.stringify({ longUrl }),
 				});
+				if (fetchData.status !== 200) {
+					setError(fetchData.statusText);
+					setData(null);
+					setLongUrl('');
+					return;
+				}
+				setError('');
 				const resData = await fetchData.json();
 				setData(resData);
 				setLongUrl('');
 				setHistory((prevHistory) => [...prevHistory, longUrl]);
+			} else {
+				setError('Please enter a valid URL');
+				setData(null);
+				setLongUrl('');
 			}
 		} catch (error: any) {
 			console.log(error.message);
@@ -73,6 +84,8 @@ function App() {
 					transition={{ duration: 0.5 }}
 					className='data__value'
 				>
+					{error && <p className='error'>{error}</p>}
+
 					<Link to={data?.hashValue} target='_blank'>
 						{data?.hashValue}
 					</Link>
