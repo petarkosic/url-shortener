@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './App.css';
 import { motion } from 'framer-motion';
@@ -8,6 +8,9 @@ function App() {
 	const [data, setData] = useState<any>(null);
 	const [history, setHistory] = useState<string[]>([]);
 	const [error, setError] = useState<string>('');
+
+	const bottomOfHistoryRef = useRef<HTMLDivElement | null>(null);
+	const inputRef = useRef<HTMLInputElement | null>(null);
 
 	async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
@@ -42,6 +45,17 @@ function App() {
 		}
 	}
 
+	useEffect(() => {
+		if (bottomOfHistoryRef.current) {
+			bottomOfHistoryRef.current.scrollIntoView({
+				behavior: 'smooth',
+			});
+		}
+		if (inputRef.current) {
+			inputRef?.current?.focus();
+		}
+	}, [history]);
+
 	return (
 		<div className='App'>
 			{history.length > 0 && (
@@ -63,6 +77,7 @@ function App() {
 								</Link>
 							</motion.li>
 						))}
+						<div ref={bottomOfHistoryRef}></div>
 					</div>
 				</div>
 			)}
@@ -74,6 +89,7 @@ function App() {
 							value={longUrl}
 							onChange={(e) => setLongUrl(e.target.value)}
 							placeholder='Enter URL'
+							ref={inputRef}
 						/>
 						<button type='submit'>Submit</button>
 					</form>
